@@ -1,4 +1,5 @@
 import 'package:dispatcher/bloc/navbar_main/navbar_main_bloc.dart';
+import 'package:dispatcher/repository/articles_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,8 +21,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: BlocProvider(
-          create: (_) => NavbarMainBloc(),
+      home: RepositoryProvider(
+          create: (_) => ArticlesRepository(),
           child: NavbarMainPage()
       ),
     );

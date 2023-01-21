@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
@@ -14,15 +15,17 @@ part 'home_event.dart';
 part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  HomeBloc() : super(HomeInitial()) {
+
+  final ArticlesRepository articleRepository;
+
+  HomeBloc({required this.articleRepository}) : super(HomeInitial()) {
+    log("HomeBloc init..");
     on<FetchArticles>(_onFetchArticles);
   }
 
-  late final ArticlesRepository _repository = ArticlesRepository();
-
   _onFetchArticles(FetchArticles event, Emitter<HomeState> emit) async {
     emit(Loading());
-    final articles = await _repository.getTopHeadlines();
+    final articles = await articleRepository.getTopHeadlines();
     emit(ArticlesLoaded(articles: articles));
   }
 
