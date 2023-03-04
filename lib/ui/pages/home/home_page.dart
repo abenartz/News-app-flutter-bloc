@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:dispatcher/model/article.dart';
 import 'package:dispatcher/repository/articles_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,7 +24,6 @@ class HomaPageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
 
   HomaPageState() {
     log("HomaPageState: init..");
-    _scrollController.addListener(_onScroll);
   }
 
   @override
@@ -45,31 +45,56 @@ class HomaPageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
           if (state is HomeInitial) {
             context.read<HomeBloc>().add(FetchArticles());
           }
-          if (state is ArticlesLoaded) {
-            return ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: state.articles.length,
-              itemBuilder: (context, position) {
-                return ArticleCard(article: state.articles[position]);
-              },
-              separatorBuilder: (BuildContext context, int index) {
-                return const SizedBox(height: 16);
-              },
-              controller: _scrollController,
-            );
+          else if (state is Loading) {
+            return const SpinKitWave(color: AppColors.appBackground,);
           }
-          return const SpinKitWave(color: AppColors.appBackground,);
+          else if (state is ArticlesLoaded) {
+            log("home_page: ArticlesLoaded - ${state.articles.length} articles, isFetchingMore = ${state.isFetchingMore}");
+            return getLArticlesListView(state.articles, state.isFetchingMore, context);
+          }
+          return const Text("Something went wrong!");
         },
       );
   }
 
-  void _onScroll() {
+  Widget getLArticlesListView(List<Article> articles, bool isFetchingMore, BuildContext context) {
+    final itemCount = (isFetchingMore) ? articles.length+1 : articles.length;
+    return ListView.separated(
+      padding: const EdgeInsets.all(16),
+      itemCount: itemCount,
+      itemBuilder: (context, position) {
+        if (position >= articles.length) {
+          return const Center(
+            child: SizedBox(
+              height: 50,
+              width: 50,
+              child: CircularProgressIndicator(),
+            ),
+          );        }
+        return ArticleCard(article: articles[position]);
+      },
+      separatorBuilder: (BuildContext context, int index) {
+        return const SizedBox(height: 16);
+      },
+      controller: _scrollController
+        ..addListener(() {_onScroll(context);}),
+    );
+  }
+
+  void _onScroll(BuildContext context) {
     final fetchingTh = 0.9 * _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.position.pixels;
-    if (currentScroll >= fetchingTh) {
-      log("HomePage: End of scroll..");
+    if (currentScroll >= fetchingTh ) {
+      context.read<HomeBloc>().add(FetchArticles());
     }
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+  }
+
 
   @override
   bool get wantKeepAlive => true;

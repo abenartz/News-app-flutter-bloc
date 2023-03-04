@@ -9,12 +9,18 @@ class HomeInitial extends HomeState {
 }
 
 class ArticlesLoaded extends HomeState {
-  ArticlesLoaded({required this.articles});
+  ArticlesLoaded({
+    required this.articles,
+    required this.query,
+    required this.isFetchingMore,
+  });
 
   final List<Article> articles;
+  final String? query;
+  bool isFetchingMore;
 
   @override
-  List<Object?> get props => [articles];
+  List<Object?> get props => [articles, query, isFetchingMore];
 }
 
 class Loading extends HomeState {

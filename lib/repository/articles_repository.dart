@@ -1,4 +1,6 @@
 
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:dispatcher/api/articles/responses/get_everything_response.dart';
 import 'package:dispatcher/model/article.dart';
@@ -24,9 +26,13 @@ class ArticlesRepository {
     }
   }
 
-  Future<List<Article>> getTopHeadlines() async {
+  Future<List<Article>> getPageTopHeadlines(int pageNum, String? query) async {
     try {
-      final GetEverythingResponse response = await articlesApi.getTopHeadlines();
+      log("ArticlesRepository: getPageTopHeadlines(): pageNum = $pageNum");
+      final GetEverythingResponse response = await articlesApi.getTopHeadlines(
+          pageNum,
+          query
+      );
       return response.articles.map((articleDto) =>
           Article.fromDto(articleDto)
       ).toList();

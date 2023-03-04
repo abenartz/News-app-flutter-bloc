@@ -1,9 +1,5 @@
-import 'dart:async';
 import 'dart:developer';
-import 'dart:io';
-
 import 'package:bloc/bloc.dart';
-import 'package:dispatcher/api/articles/dto/article_dto.dart';
 import 'package:dispatcher/repository/articles_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
@@ -17,6 +13,10 @@ part 'home_state.dart';
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   final ArticlesRepository articleRepository;
+  int _pageNum = 0;
+  bool _isSearchExhausted = false;
+  bool _isFetching = false;
+  final List<Article> _articles = [];
 
   HomeBloc({required this.articleRepository}) : super(HomeInitial()) {
     log("HomeBloc init..");
@@ -24,17 +24,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   _onFetchArticles(FetchArticles event, Emitter<HomeState> emit) async {
-    emit(Loading());
-    final articles = await articleRepository.getTopHeadlines();
-    emit(ArticlesLoaded(articles: articles));
+    if (!_isSearchExhausted && !_isFetching) {
+      _isFetching = true;
+      emit(_pageNum == 0
+          ? Loading()
+          : ArticlesLoaded(articles: _articles, query: event.searchKey, isFetchingMore: true));
+      final articlesToAdd = await articleRepository.getPageTopHeadlines(_pageNum, event.searchKey);
+      if (articlesToAdd.isEmpty) {
+        _isSearchExhausted = true;
+      }
+      _articles.addAll(articlesToAdd);
+      emit(ArticlesLoaded(articles: _articles, query: event.searchKey, isFetchingMore: false));
+      _pageNum++;
+      _isFetching = false;
+    }
   }
-
-  // static const articles = [
-  //   Article(imageUrl: "images/article_card.png", title: "first", author: "asi", description: "body\nbody\nbody\nbody\nbody\nbody\n"),
-  //   Article(imageUrl: "images/article_card.png", title: "second", author: "asidsaf", description: "bodfdsafy\nbodfdsafy\nbodfdsafy\nbodfdsafy\nbodfdsafy\nbodfdsafy\nbodfdsafy\n"),
-  //   Article(imageUrl: "images/article_card.png", title: "third", author: "3333", description: "e3e3e3e3\ne3e3e3e3\ne3e3e3e3\ne3e3e3e3\ne3e3e3e3\ne3e3e3e3\ne3e3e3e3\ne3e3e3e3\n"),
-  // ];
-
 }
-
-

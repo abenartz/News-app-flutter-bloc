@@ -1,5 +1,7 @@
+import 'package:dio/dio.dart';
 import 'package:dispatcher/api/articles/responses/get_everything_response.dart';
 import 'package:dispatcher/constants/constants.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../../network/dio_client.dart';
 
@@ -14,6 +16,7 @@ class ArticlesApi {
 
   Future<GetEverythingResponse> getEverything() async {
     try {
+      await Future.delayed(const Duration(seconds: DioClient.testDelaySec));
       final response = await dioClient.get(
           _everything,
           queryParameters: {'apiKey': Constants.apiKey, 'q': ''}
@@ -24,21 +27,20 @@ class ArticlesApi {
     }
   }
 
-  Future<GetEverythingResponse> getTopHeadlines() async {
+  Future<GetEverythingResponse> getTopHeadlines(int pageNum, String? query) async {
     try {
-      final response = await dioClient.get(
-          _topHeadlines,
-          queryParameters: {
-            'apiKey': Constants.apiKey,
-            'country': 'us',
-          }
-      );
+      await Future.delayed(const Duration(seconds: DioClient.testDelaySec));
+      final response = await dioClient.get(_topHeadlines, queryParameters: {
+        'apiKey': Constants.apiKey,
+        'country': 'us',
+        'page': pageNum,
+        'q': query,
+        'pageSize': 5,
+      });
       return GetEverythingResponse.fromJson(response.data);
     } catch (e) {
+      debugPrint("ArticlesApi: Exception - $e");
       rethrow;
     }
   }
-
-
-
 }
