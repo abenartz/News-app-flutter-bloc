@@ -8,18 +8,17 @@ import '../../../bloc/home/home_bloc.dart';
 import '../../../constants/app_colors.dart';
 import '../../../enums/nav_bar_item.dart';
 import '../../widgets/favorite_article_card.dart';
-import '../../widgets/main_app_bar.dart';
-
+import '../../widgets/app_bars/main_app_bar.dart';
 
 class FavoritePage extends StatefulWidget {
   const FavoritePage({super.key});
 
   @override
   State<StatefulWidget> createState() => FavoritePageState();
-
 }
-class FavoritePageState extends State<FavoritePage> with AutomaticKeepAliveClientMixin {
 
+class FavoritePageState extends State<FavoritePage>
+    with AutomaticKeepAliveClientMixin {
   final _scrollController = ScrollController();
 
   FavoritePageState() {
@@ -30,12 +29,10 @@ class FavoritePageState extends State<FavoritePage> with AutomaticKeepAliveClien
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-    appBar: MainAppBar(
-      title: NavbarItem.favorites.title,
-      bgColor: AppColors.appBackground
-    ),
-    body: _favoritesArticlesView(),
-  );
+      backgroundColor: AppColors.surfaceBg,
+      appBar: MainAppBar(title: NavbarItem.favorites.title),
+      body: _favoritesArticlesView(),
+    );
   }
 
   Widget _favoritesArticlesView() {
@@ -56,10 +53,14 @@ class FavoritePageState extends State<FavoritePage> with AutomaticKeepAliveClien
               return const SizedBox(height: 4);
             },
             controller: _scrollController
-                ..addListener(() {_onScroll(context);}),
+              ..addListener(() {
+                _onScroll(context);
+              }),
           );
         }
-        return const SpinKitWave(color: AppColors.appBackground,);
+        return const SpinKitWave(
+          color: AppColors.appBackground,
+        );
       },
     );
   }
@@ -81,5 +82,4 @@ class FavoritePageState extends State<FavoritePage> with AutomaticKeepAliveClien
 
   @override
   bool get wantKeepAlive => true;
-
 }

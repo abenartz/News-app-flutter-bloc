@@ -8,8 +8,10 @@ import '../../../bloc/home/home_bloc.dart';
 import '../../../constants/app_colors.dart';
 import '../../../enums/nav_bar_item.dart';
 import '../../widgets/article_card.dart';
-import '../../widgets/main_app_bar.dart';
+import '../../widgets/app_bars/main_app_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+import '../article_details/article_detail_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -30,9 +32,9 @@ class HomaPageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
+      backgroundColor: AppColors.surfaceBg,
       appBar: MainAppBar(
-          title: NavbarItem.home.title,
-          bgColor: AppColors.appBackground
+          title: NavbarItem.home.title
       ),
       body: _homeArticlesView(),
     );
@@ -71,7 +73,18 @@ class HomaPageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
               child: CircularProgressIndicator(),
             ),
           );        }
-        return ArticleCard(article: articles[position]);
+        return InkWell(
+          child: ArticleCard(article: articles[position]),
+          onTap: () {
+            log("getLArticlesListView: InkWell onTap()..");
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ArticleDetailsPage(article: articles[position])
+                )
+            );
+          }
+        );
       },
       separatorBuilder: (BuildContext context, int index) {
         return const SizedBox(height: 16);

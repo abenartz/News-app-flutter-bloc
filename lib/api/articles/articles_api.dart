@@ -1,5 +1,5 @@
-import 'package:dio/dio.dart';
 import 'package:dispatcher/api/articles/responses/get_everything_response.dart';
+import 'package:dispatcher/bloc/home/home_bloc.dart';
 import 'package:dispatcher/constants/constants.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -31,11 +31,11 @@ class ArticlesApi {
     try {
       await Future.delayed(const Duration(seconds: DioClient.testDelaySec));
       final response = await dioClient.get(_topHeadlines, queryParameters: {
-        'apiKey': Constants.apiKey,
+        'apiKey': Constants.apiKey, // todo: set in interceptor..
         'country': 'us',
         'page': pageNum,
         'q': query,
-        'pageSize': 5,
+        'pageSize': HomeBloc.pageSize,
       });
       return GetEverythingResponse.fromJson(response.data);
     } catch (e) {

@@ -12,8 +12,9 @@ part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
+  static const pageSize = 20;
   final ArticlesRepository articleRepository;
-  int _pageNum = 0;
+  int _pageNum = 1;
   bool _isSearchExhausted = false;
   bool _isFetching = false;
   final List<Article> _articles = [];
@@ -26,11 +27,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   _onFetchArticles(FetchArticles event, Emitter<HomeState> emit) async {
     if (!_isSearchExhausted && !_isFetching) {
       _isFetching = true;
-      emit(_pageNum == 0
+      emit(_pageNum <= 1
           ? Loading()
           : ArticlesLoaded(articles: _articles, query: event.searchKey, isFetchingMore: true));
       final articlesToAdd = await articleRepository.getPageTopHeadlines(_pageNum, event.searchKey);
-      if (articlesToAdd.isEmpty) {
+      for (var article in articlesToAdd) {
+        log("HomeBloc article to add- ${article.title}");
+      }
+      if (articlesToAdd.length < pageSize) {
         _isSearchExhausted = true;
       }
       _articles.addAll(articlesToAdd);

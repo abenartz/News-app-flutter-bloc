@@ -5,4 +5,7 @@ class Constants {
   static const baseUrl = "https://newsapi.org/v2/";
   static const connectionTimeout = 15000;
   static const receiveTimeout = 15000;
+
+  static const appBarHeight = 64.0;
+  static const appBarElevation = 6.0;
 }

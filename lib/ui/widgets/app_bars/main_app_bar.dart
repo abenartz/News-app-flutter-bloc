@@ -1,23 +1,22 @@
+import 'package:dispatcher/constants/constants.dart';
 import 'package:flutter/material.dart';
 
-import '../../constants/app_colors.dart';
+import '../../../constants/app_colors.dart';
 
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   const MainAppBar({
     super.key,
     required this.title,
-    required this.bgColor
   });
 
   final String title;
-  final Color bgColor;
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: bgColor,
-      elevation: 6,
+      backgroundColor: AppColors.appBackground,
+      elevation: Constants.appBarElevation,
       title: Row(
         children: [
           SizedBox(
@@ -44,6 +43,6 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(64);
+  Size get preferredSize => const Size.fromHeight(Constants.appBarHeight);
 
 }
