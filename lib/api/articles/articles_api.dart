@@ -31,7 +31,7 @@ class ArticlesApi {
     try {
       await Future.delayed(const Duration(seconds: DioClient.testDelaySec));
       final response = await dioClient.get(_topHeadlines, queryParameters: {
-        'apiKey': Constants.apiKey, // todo: set in interceptor..
+        'apiKey': Constants.apiKey,
         'country': 'us',
         'page': pageNum,
         'q': query,

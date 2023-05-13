@@ -3,7 +3,7 @@ import 'package:dispatcher/constants/constants.dart';
 
 class DioClient {
 
-  static const int testDelaySec = 3;
+  static const int testDelaySec = 0;
   static final instance = DioClient._();
   final Dio _dio = Dio();
 

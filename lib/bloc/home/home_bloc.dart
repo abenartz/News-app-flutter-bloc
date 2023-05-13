@@ -31,9 +31,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           ? Loading()
           : ArticlesLoaded(articles: _articles, query: event.searchKey, isFetchingMore: true));
       final articlesToAdd = await articleRepository.getPageTopHeadlines(_pageNum, event.searchKey);
-      for (var article in articlesToAdd) {
-        log("HomeBloc article to add- ${article.title}");
-      }
       if (articlesToAdd.length < pageSize) {
         _isSearchExhausted = true;
       }
